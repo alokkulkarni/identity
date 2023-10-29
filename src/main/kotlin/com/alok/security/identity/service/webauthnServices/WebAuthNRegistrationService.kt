@@ -3,7 +3,7 @@
 package com.alok.security.identity.service.webauthnServices
 
 import com.alok.security.identity.models.userModels.UserIdentity
-import com.alok.security.identity.models.userModels.WebAuthNCredentials
+import com.alok.security.identity.models.webauthnModels.WebAuthNCredentials
 import com.alok.security.identity.models.webauthnModels.*
 import com.alok.security.identity.repository.UserIdentityRepository
 import com.alok.security.identity.repository.WebauthNRegistrationFlowRepository

@@ -1,7 +1,7 @@
 package com.alok.security.identity.service.webauthnServices
 
 import com.alok.security.identity.models.userModels.TokenUserDetails
-import com.alok.security.identity.models.userModels.WebAuthNCredentials
+import com.alok.security.identity.models.webauthnModels.WebAuthNCredentials
 import com.alok.security.identity.service.UserService
 import com.alok.security.identity.utils.WebauthNUtils
 import com.yubico.webauthn.CredentialRepository

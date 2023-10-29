@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package com.alok.security.identity.models.userModels
+package com.alok.security.identity.models.webauthnModels
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity

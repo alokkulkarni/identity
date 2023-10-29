@@ -3,12 +3,12 @@
 package com.alok.security.identity.models.userModels
 
 import com.alok.security.identity.models.mfaDevice.OneTimePasswordDeviceEntity
+import com.alok.security.identity.models.webauthnModels.WebAuthNCredentials
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Null
 import org.springframework.data.relational.core.mapping.Column
 import java.time.LocalDateTime
-import java.util.UUID
 
 @Entity(name = "users_identity")
 @Table(name = "users_identity")

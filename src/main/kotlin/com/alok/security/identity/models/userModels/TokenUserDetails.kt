@@ -4,6 +4,7 @@ package com.alok.security.identity.models.userModels
 
 import com.alok.security.identity.models.mfaDevice.GoogleAuthenticatorDevice
 import com.alok.security.identity.models.mfaDevice.OneTimePasswordDevice
+import com.alok.security.identity.models.webauthnModels.WebAuthNCredentials
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails

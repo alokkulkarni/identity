@@ -9,7 +9,7 @@ import com.alok.security.identity.models.mfaDevice.OneTimePasswordDeviceEntity
 import com.alok.security.identity.models.userModels.Authorities
 import com.alok.security.identity.models.userModels.TokenUserDetails
 import com.alok.security.identity.models.userModels.UserIdentity
-import com.alok.security.identity.models.userModels.WebAuthNCredentials
+import com.alok.security.identity.models.webauthnModels.WebAuthNCredentials
 import com.alok.security.identity.repository.OneTimePasswordDeviceRepository
 import com.alok.security.identity.repository.UserIdentityRepository
 import org.slf4j.Logger

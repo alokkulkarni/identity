@@ -2,7 +2,6 @@ package com.alok.security.identity
 
 import com.alok.security.identity.configuration.WebauthNProperties
 import com.alok.security.identity.models.apicontracts.UserRegistrationRequest
-import com.alok.security.identity.models.userModels.WebAuthNCredentials
 import com.alok.security.identity.repository.UserIdentityRepository
 import com.alok.security.identity.service.UserService
 import org.springframework.boot.CommandLineRunner
@@ -12,7 +11,6 @@ import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories
-import java.util.*
 
 @SpringBootApplication
 @EnableJdbcRepositories
