@@ -4,6 +4,7 @@ import com.alok.security.identity.models.magictokens.MagicToken
 import com.alok.security.identity.repository.MagicTokenRepository
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository
@@ -22,7 +23,7 @@ class MagicTokenService(private val userService: UserService, private val magicT
     private val repo = HttpSessionSecurityContextRepository()
 
     companion object {
-        private val log = org.slf4j.LoggerFactory.getLogger(MagicTokenService::class.java)
+        private val log = LoggerFactory.getLogger(MagicTokenService::class.java)
     }
 
     fun authenticateTokens(token: String, request: HttpServletRequest, response: HttpServletResponse) {
@@ -32,8 +33,8 @@ class MagicTokenService(private val userService: UserService, private val magicT
             val user = userService.loadUserByUsername(magicToken.username)
             val auth = UsernamePasswordAuthenticationToken(user, user.password, user.authorities)
             strategy.createEmptyContext()
-            strategy.getContext()?.authentication = auth
-            repo.saveContext(strategy.getContext()!!, request, response)
+            strategy.context?.authentication = auth
+            repo.saveContext(strategy.context!!, request, response)
             magicToken.id?.let { magicTokenRepository.deleteById(it) }
         }
     }
@@ -59,6 +60,4 @@ class MagicTokenService(private val userService: UserService, private val magicT
     private fun mail(token: MagicToken) {
         log.info("${token.username} has magic link http://localhost:8080/auth/${token.token}")
     }
-
-
 }

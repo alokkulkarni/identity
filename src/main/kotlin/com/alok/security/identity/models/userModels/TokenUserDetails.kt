@@ -57,6 +57,10 @@ class TokenUserDetails(private val userIdentity: UserIdentity) : UserDetails {
         return userIdentity.device?.let { GoogleAuthenticatorDevice(it.id, userIdentity.device!!.name, userIdentity.device!!.type, userIdentity.device!!.secret, userIdentity.device!!.confirmed) }
     }
 
+    fun getWebAuthNCredentials(): MutableList<WebAuthNCredentials>? {
+        return userIdentity.webAuthNCredentials
+    }
+
     fun requiresMfa(): Boolean {
         log.info("Checking if user ${userIdentity.username} requires MFA")
         log.info("User ${userIdentity.username} has device ${userIdentity.device}")

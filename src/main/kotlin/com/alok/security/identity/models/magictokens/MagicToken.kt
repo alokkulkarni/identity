@@ -1,3 +1,5 @@
+@file:Suppress("JpaDataSourceORMInspection", "unused")
+
 package com.alok.security.identity.models.magictokens
 
 import jakarta.persistence.Column
@@ -5,7 +7,6 @@ import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
 import java.time.Instant
-import javax.print.attribute.standard.DateTimeAtCreation
 
 @Entity(name = "magic_tokens")
 class MagicToken {
@@ -13,10 +14,10 @@ class MagicToken {
     @Id
     @GeneratedValue(generator = "UUID")
     val id: Long? = null
-    lateinit var username: String
-    lateinit var token: String
+    var username: String
+    var token: String
     @Column(name = "created_at")
-    lateinit var created: Instant
+    var created: Instant
 
     constructor() {
         this.username = ""

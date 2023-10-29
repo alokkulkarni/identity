@@ -10,10 +10,11 @@ import org.springframework.data.relational.core.mapping.Column
 import java.time.LocalDateTime
 import java.util.UUID
 
-@Entity(name = "users")
+@Entity(name = "users_identity")
+@Table(name = "users_identity")
 data class UserIdentity(
         @Id
-        val id: UUID,
+        val id: Long,
         @Column("username")
         @NotNull
         val username: String,
@@ -59,7 +60,10 @@ data class UserIdentity(
         var device: OneTimePasswordDeviceEntity?,
         @OneToMany(targetEntity = Authorities::class, cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
         @Null
-        val authorities: MutableList<Authorities>
+        var authorities: MutableList<Authorities>,
+        @OneToMany(targetEntity = WebAuthNCredentials::class, cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+        var webAuthNCredentials: MutableList<WebAuthNCredentials>? = mutableListOf(WebAuthNCredentials())
+
 ) {
-        constructor() : this(UUID.randomUUID(), "", "", "", "", "", "", "", true, true,true,true,LocalDateTime.now(), LocalDateTime.now(), null, mutableListOf())  // JPA requires a default constructor)
+    constructor() : this(0, " ", " ", " ", " ", " ", " ", " ", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(), null, mutableListOf(), mutableListOf())
 }

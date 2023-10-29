@@ -26,6 +26,7 @@ class MagicTokenController(private val magicTokenService: MagicTokenService) {
             magicTokenService.issueMagicToken(request.username)
         } catch (cause: Exception) {
             log.error("Failed to issue token for ${request.username}")
+            log.error(cause.message)
         }
     }
 
