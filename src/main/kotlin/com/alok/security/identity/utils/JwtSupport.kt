@@ -31,8 +31,9 @@ class JwtSupport {
 
     companion object {
         val log = LoggerFactory.getLogger(JwtSupport::class.java)
-         val rsaKey: RSAKey = Jwks().generateRSAKey()
     }
+
+    val rsaKey: RSAKey = Jwks().generateRSAKey()
 
     private fun getJwtParser(): JwtParser {
         try {
