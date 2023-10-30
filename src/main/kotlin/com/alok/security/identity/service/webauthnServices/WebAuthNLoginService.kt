@@ -1,4 +1,4 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "USELESS_ELVIS")
 
 package com.alok.security.identity.service.webauthnServices
 
@@ -8,6 +8,7 @@ import com.alok.security.identity.models.webauthnModels.WebAuthNLoginStartReques
 import com.alok.security.identity.models.webauthnModels.WebAuthNLoginStartResponse
 import com.alok.security.identity.repository.WebAuthNLoginFlowRepository
 import com.alok.security.identity.service.UserService
+import com.alok.security.identity.utils.JsonUtils
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.yubico.webauthn.*
 import com.yubico.webauthn.exception.AssertionFailedException
@@ -34,14 +35,17 @@ class WebAuthNLoginService(val relyingParty: RelyingParty,
     @Transactional(propagation = Propagation.REQUIRED)
     @Throws(AssertionFailedException::class)
     fun finishLogin(loginFinishRequest: WebAuthNLoginFinishRequest): AssertionResult {
-        val loginFlowEntity: WebAuthNLoginFlowEntity? = this.webAuthNLoginFlowRepository
-            .findById(loginFinishRequest.flowId)
-            .orElseThrow {
-                RuntimeException(
-                    ("flow id " + loginFinishRequest.flowId) + " not found"
-                )
-            }
-        val assertionRequestJson: String = loginFlowEntity?.assertionRequest ?: throw RuntimeException("Assertion request not found")
+
+        val loginFlowEntity: WebAuthNLoginFlowEntity = this.webAuthNLoginFlowRepository
+                                                        .findById(loginFinishRequest.flowId)
+                                                        .orElseThrow {
+                                                            RuntimeException(
+                                                                ("flow id " + loginFinishRequest.flowId) + " not found"
+                                                            )
+                                                        }
+        val assertionRequestJson: String = loginFlowEntity.assertionRequest ?: throw RuntimeException("Assertion request not found")
+        val credentials =  loginFinishRequest.credential ?: throw RuntimeException("Credentials not found")
+
         val assertionRequest: AssertionRequest? = try {
                                                             AssertionRequest.fromJson(assertionRequestJson)
                                                       } catch (e: JsonProcessingException) {
@@ -49,11 +53,13 @@ class WebAuthNLoginService(val relyingParty: RelyingParty,
                                                       }
         val options = FinishAssertionOptions.builder()
             .request(assertionRequest)
-            .response(loginFinishRequest.credential)
+            .response(credentials)
             .build()
+
         val assertionResult = relyingParty.finishAssertion(options)
-        loginFlowEntity.assertionResult = assertionResult.toString()
+        loginFlowEntity.assertionResult = JsonUtils.toJson(assertionResult)
         loginFlowEntity.successfulLogin = assertionResult.isSuccess
+        this.webAuthNLoginFlowRepository.save(loginFlowEntity)
         return assertionResult
     }
 
@@ -71,12 +77,12 @@ class WebAuthNLoginService(val relyingParty: RelyingParty,
     fun startLogin(loginStartRequest: WebAuthNLoginStartRequest): WebAuthNLoginStartResponse {
 
         // Find the user in the user database
-        userService.findUserEmail(loginStartRequest.username) ?: throw RuntimeException("User not found")
+        val userIdentity = userService.findUserEmail(loginStartRequest.username) ?: throw RuntimeException("User not found")
 
         // make the assertion request to send to the client
         val options: StartAssertionOptions = StartAssertionOptions.builder()
             .timeout(60000)
-            .username(loginStartRequest.username) //     .userHandle(YubicoUtils.toByteArray(user.id()))
+            .username(userIdentity.username) //     .userHandle(YubicoUtils.toByteArray(user.id()))
             .build()
         val assertionRequest = relyingParty.startAssertion(options)
         val loginStartResponse = WebAuthNLoginStartResponse(

@@ -119,11 +119,14 @@ class WebAuthNRegistrationService(
         finishRequest: RegistrationFinishRequest,
         credentialCreationOptions: PublicKeyCredentialCreationOptions
     ): RegistrationFinishResponse {
+
         val options = FinishRegistrationOptions.builder()
             .request(credentialCreationOptions)
             .response(finishRequest.credential)
             .build()
+
         val registrationResult = relyingParty.finishRegistration(options)
+
         val fidoCredential = WebAuthNCredentials(
             UUID.randomUUID(),
             registrationResult.keyId.id.base64Url,
@@ -132,12 +135,16 @@ class WebAuthNRegistrationService(
             registrationResult.publicKeyCose.base64Url,
             registrationResult.signatureCount.toInt()
         )
+
         userService.addCredential(fidoCredential)
+
         val registrationFinishResponse = RegistrationFinishResponse(
             finishRequest.flowId,
             registrationComplete = true
         )
+
         logFinishStep(finishRequest, registrationResult, registrationFinishResponse)
+
         return registrationFinishResponse
     }
 
@@ -154,9 +161,11 @@ class WebAuthNRegistrationService(
                             + finishRequest.flowId
                 )
             }
+
         registrationFlow.finishRequest = JsonUtils.toJson(finishRequest)
         registrationFlow.finishResponse = JsonUtils.toJson(registrationFinishResponse)
         registrationFlow.registrationResult = JsonUtils.toJson(registrationResult)
+        registrationFlowRepository.save(registrationFlow)
     }
 
 }
