@@ -11,7 +11,7 @@ class WebauthNProperties {
     val hostname: String = "localhost"
     val displayName: String = "WebauthN Demo"
     val rpName: String = "WebauthN Demo"
-    val origin: MutableList<String> = mutableListOf("http://localhost:8080")
+    val origin: MutableList<String> = mutableListOf("http://localhost:9898")
     val rpId: String = "localhost"
     val icon: String = "https://avatars.githubusercontent.com/u/24622181?s=200&v=4"
     val attestation: String = "none"

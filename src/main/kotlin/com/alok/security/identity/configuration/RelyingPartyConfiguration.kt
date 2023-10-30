@@ -8,23 +8,23 @@ import org.springframework.context.annotation.Configuration
 
 
 @Configuration
-class RelyingPartyConfiguration {
+class RelyingPartyConfiguration(val webauthNProperties: WebauthNProperties) {
 
     @Bean
     fun relyingParty(credentialRepository: CredentialRepository): RelyingParty {
         val relyingPartyIdentity = RelyingPartyIdentity.builder()
-            .id("localhost")
-            .name("localhost")
+            .id(webauthNProperties.rpId)
+            .name(webauthNProperties.rpName)
             .build()
 
         return RelyingParty.builder()
             .identity(relyingPartyIdentity)
             .credentialRepository(credentialRepository)
-            .validateSignatureCounter(true)
+            .validateSignatureCounter(false)
             .allowUntrustedAttestation(false)
             .allowOriginPort(true)
             .allowOriginSubdomain(true)
+            .origins(webauthNProperties.origin.toSet())
             .build()
     }
-
 }
