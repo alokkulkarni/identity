@@ -10,7 +10,7 @@ spring:
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/identity
     username: root
-    password: Sheetli0913*
+    password: secret
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     database: mysql
