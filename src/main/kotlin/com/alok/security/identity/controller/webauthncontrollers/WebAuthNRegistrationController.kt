@@ -26,6 +26,7 @@ class WebAuthNRegistrationController(private val webAuthNRegistrationService: We
     }
 
     @PostMapping("/webauthn/register/start", consumes = ["application/json"], produces = ["application/json"])
+    @Throws(JsonProcessingException::class, RuntimeException::class)
     @ResponseBody
     fun startRegistration(
         @RequestBody request: RegistrationStartRequest, session: HttpSession
