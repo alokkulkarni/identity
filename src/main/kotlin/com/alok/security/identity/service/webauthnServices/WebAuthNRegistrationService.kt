@@ -15,10 +15,8 @@ import com.yubico.webauthn.FinishRegistrationOptions
 import com.yubico.webauthn.RegistrationResult
 import com.yubico.webauthn.RelyingParty
 import com.yubico.webauthn.StartRegistrationOptions
-import com.yubico.webauthn.data.AuthenticatorSelectionCriteria
-import com.yubico.webauthn.data.PublicKeyCredentialCreationOptions
+import com.yubico.webauthn.data.*
 import com.yubico.webauthn.data.UserIdentity.*
-import com.yubico.webauthn.data.UserVerificationRequirement
 import com.yubico.webauthn.exception.RegistrationFailedException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
@@ -48,7 +46,6 @@ class WebAuthNRegistrationService(
      * @return a json object with configuration details for the javascript in the browser to use to call the webAuthn api
      */
     @Transactional(propagation = Propagation.REQUIRED)
-    @Throws(JsonProcessingException::class)
     fun startRegistration(startRequest: RegistrationStartRequest): RegistrationStartResponse {
         val user: UserIdentity = userIdentityRepository.findByUsername(startRequest.username)
             ?: throw IllegalStateException("User does not exist")
@@ -68,7 +65,7 @@ class WebAuthNRegistrationService(
             JsonUtils.toJson(startResponse),
             " ",
             " ",
-            startResponse.credentialCreationOptions.toJson(),
+            JsonUtils.toJson(startResponse.credentialCreationOptions),
             " "
         )
         registrationFlowRepository.save<WebAuthNRegistrationFlowEntity>(registrationEntity)
@@ -92,7 +89,9 @@ class WebAuthNRegistrationService(
             .id(WebauthNUtils().toByteArray(user.id))
             .build()
         val authenticatorSelectionCriteria = AuthenticatorSelectionCriteria.builder()
-            .userVerification(UserVerificationRequirement.DISCOURAGED)
+            .userVerification(UserVerificationRequirement.REQUIRED)
+            .residentKey(ResidentKeyRequirement.PREFERRED)
+            .authenticatorAttachment(AuthenticatorAttachment.PLATFORM)
             .build()
         val startRegistrationOptions = StartRegistrationOptions.builder()
             .user(userIdentity)

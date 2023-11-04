@@ -12,6 +12,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
 
 
@@ -24,8 +25,8 @@ class WebAuthNRegistrationController(private val webAuthNRegistrationService: We
         private var FINISH_REG_REQUEST = "finish_reg_request"
     }
 
-    @PostMapping("/webauthn/register/start")
-    @Throws(JsonProcessingException::class)
+    @PostMapping("/webauthn/register/start", consumes = ["application/json"], produces = ["application/json"])
+    @ResponseBody
     fun startRegistration(
         @RequestBody request: RegistrationStartRequest, session: HttpSession
     ): RegistrationStartResponse {
@@ -36,6 +37,7 @@ class WebAuthNRegistrationController(private val webAuthNRegistrationService: We
 
     @PostMapping("/webauthn/register/finish")
     @Throws(RegistrationFailedException::class, JsonProcessingException::class, RuntimeException::class)
+    @ResponseBody
     fun finishRegistration(
         @RequestBody request: RegistrationFinishRequest, session: HttpSession
     ): RegistrationFinishResponse {

@@ -33,6 +33,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 
 @Configuration
 @EnableWebSecurity(debug = true)
+//@EnableWebMvc
 class SecurityConfig {
 
 
@@ -48,11 +49,17 @@ class SecurityConfig {
             .csrf { csrf ->
                 csrf.disable()
             }
+            .cors { cors ->
+                cors.disable()
+            }
             .sessionManagement { session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+            .anonymous { anonymous ->
+                anonymous.principal("anonymous")
+            }
             .authorizeHttpRequests { authorize ->
                 authorize
-                    .requestMatchers("/","/register", "/error", "/auth", "/auth**").permitAll()
+                    .requestMatchers("/","/register", "/error", "/auth", "/auth**","/webauthn/**").permitAll()
                     .anyRequest().authenticated()
             }
             .authenticationProvider(DaoAuthenticationProvider().apply {
@@ -65,24 +72,24 @@ class SecurityConfig {
         return http.build()
     }
 
-    @Bean
-    @Order(2)
-    fun otpFilterChain(http: HttpSecurity,userService: UserService): SecurityFilterChain {
-
-        http
-            .csrf { csrf ->
-                csrf.disable()
-            }
-            .sessionManagement { session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
-            .authorizeHttpRequests { authorize ->
-                authorize
-                    .requestMatchers( "/auth", "/auth**").permitAll()
-                    .anyRequest().authenticated()
-            }
-            .addFilterAfter(OneTimePasswordAuthFilter(userService), UsernamePasswordAuthenticationFilter::class.java)
-        return http.build()
-    }
+//    @Bean
+//    @Order(2)
+//    fun otpFilterChain(http: HttpSecurity,userService: UserService): SecurityFilterChain {
+//
+//        http
+//            .csrf { csrf ->
+//                csrf.disable()
+//            }
+//            .sessionManagement { session ->
+//                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+//            .authorizeHttpRequests { authorize ->
+//                authorize
+//                    .requestMatchers( "/auth", "/auth**").permitAll()
+//                    .anyRequest().authenticated()
+//            }
+//            .addFilterAfter(OneTimePasswordAuthFilter(userService), UsernamePasswordAuthenticationFilter::class.java)
+//        return http.build()
+//    }
 
     @Bean
     @Order(1)
@@ -101,6 +108,7 @@ class SecurityConfig {
             .authorizeHttpRequests { authorize ->
                 authorize
                     .requestMatchers(
+                        "/",
                         "/webauthn/login/start",
                         "/webauthn/login/finish",
                         "/webauthn/register/start",

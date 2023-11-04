@@ -15,19 +15,19 @@ class WebAuthNLoginFlowEntity(
     @Column(name = "id")
     val id: UUID,
 
-    @Column(name = "start_request")
+    @Column(name = "start_request", length = 2048)
     val startRequest: String,
 
-    @Column(name = "start_response")
+    @Column(name = "start_response", length = 2048)
     val startResponse: String,
 
     @Column(name = "successful_login")
     var successfulLogin: Boolean,
 
-    @Column(name = "assertion_request")
+    @Column(name = "assertion_request", length = 2048)
     val assertionRequest: String,
 
-    @Column(name = "assertion_result")
+    @Column(name = "assertion_result", length = 2048)
     var assertionResult : String
 ) {
     constructor() : this(UUID.randomUUID(), " ", " ", false, " ", " ")

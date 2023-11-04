@@ -4,7 +4,7 @@ import com.yubico.webauthn.data.PublicKeyCredentialCreationOptions
 import jakarta.persistence.Id
 import java.util.UUID
 
-class RegistrationStartResponse(
+data class RegistrationStartResponse(
     val flowId: UUID,
     val credentialCreationOptions: PublicKeyCredentialCreationOptions
 )
