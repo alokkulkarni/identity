@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: IdentityService
+spec:
+  selector:
+    app: Identity
+  ports:
+    - protocol: TCP
+      port: 9898
+      targetPort: 9898
+  type: NodePort
+  

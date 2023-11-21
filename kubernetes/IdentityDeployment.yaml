@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: IdentityDeployment
+  labels:
+    app: Identity
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: Identity
+  template:
+    metadata:
+      name: Identity
+      labels:
+        app: Identity
+    spec:
+      containers:
+        - name: Identity
+          image: identity:latest
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+      
