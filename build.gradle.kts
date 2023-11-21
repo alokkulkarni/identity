@@ -1,3 +1,5 @@
+@file:Suppress("GradlePackageVersionRange", "GradlePackageUpdate")
+
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -44,7 +46,6 @@ dependencies {
 //	implementation("org.flywaydb:flyway-core")
 //	implementation("org.flywaydb:flyway-mysql")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	//  Zebra Crossing QR Image Processing Library
 	implementation("com.google.zxing:core:3.5.1")
 	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
 	implementation("com.google.zxing:javase:3.5.1")
@@ -53,7 +54,7 @@ dependencies {
 	implementation("dev.turingcomplete:kotlin-onetimepassword:2.4.0")
 	implementation("org.springframework.cloud:spring-cloud-starter")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
-	developmentOnly("org.springframework.boot:spring-boot-docker-compose")
+//	developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 	runtimeOnly("com.mysql:mysql-connector-j")
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
@@ -77,4 +78,8 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+tasks.bootBuildImage {
+	builder.set("paketobuildpacks/builder-jammy-base:latest")
 }
