@@ -50,24 +50,21 @@ class WebAuthNLoginService(val relyingParty: RelyingParty,
                                                             )
                                                         }
         val assertionRequestJson: String = loginFlowEntity.assertionRequest ?: throw RuntimeException("Assertion request not found")
-        logger.warn("Assertion JSON request: $assertionRequestJson")
+
         val credentials =  loginFinishRequest.credential ?: throw RuntimeException("Credentials not found")
-        logger.warn("Credentials: $credentials")
 
         val assertionRequest: AssertionRequest? = try {
                                                             AssertionRequest.fromJson(assertionRequestJson)
                                                       } catch (e: JsonProcessingException) {
                                                             throw IllegalArgumentException("Could not deserialize the assertion Request")
                                                       }
-        logger.warn("Assertion request: $assertionRequest")
+
         val options = FinishAssertionOptions.builder()
             .request(assertionRequest)
             .response(credentials)
             .build()
 
-        logger.warn("Options: $options")
         val assertionResult = relyingParty.finishAssertion(options)
-        logger.warn("Assertion result: $assertionResult")
         loginFlowEntity.assertionResult = JsonUtils.toJson(assertionResult)
         loginFlowEntity.successfulLogin = assertionResult.isSuccess
         this.webAuthNLoginFlowRepository.save(loginFlowEntity)
