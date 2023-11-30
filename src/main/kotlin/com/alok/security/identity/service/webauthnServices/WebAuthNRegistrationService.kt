@@ -8,8 +8,8 @@ import com.alok.security.identity.models.webauthnModels.*
 import com.alok.security.identity.repository.UserIdentityRepository
 import com.alok.security.identity.repository.WebauthNRegistrationFlowRepository
 import com.alok.security.identity.service.UserService
+import com.alok.security.identity.utils.ByteArrayUtils
 import com.alok.security.identity.utils.JsonUtils
-import com.alok.security.identity.utils.WebauthNUtils
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.yubico.webauthn.FinishRegistrationOptions
 import com.yubico.webauthn.RegistrationResult
@@ -31,6 +31,10 @@ class WebAuthNRegistrationService(
     private val userIdentityRepository: UserIdentityRepository,
     private val registrationFlowRepository: WebauthNRegistrationFlowRepository
 ) {
+
+    companion object {
+        private val logger = org.slf4j.LoggerFactory.getLogger(WebAuthNRegistrationService::class.java)
+    }
 
     /**
      * Kicks off the registration process by creating a new user account adding it to the database. Then the server
@@ -86,7 +90,7 @@ class WebAuthNRegistrationService(
         val userIdentity = builder()
             .name(user.username)
             .displayName(user.username)
-            .id(WebauthNUtils().toByteArray(user.id))
+            .id(ByteArrayUtils().toByteArray(user.id))
             .build()
         val authenticatorSelectionCriteria = AuthenticatorSelectionCriteria.builder()
             .userVerification(UserVerificationRequirement.REQUIRED)
@@ -124,18 +128,18 @@ class WebAuthNRegistrationService(
             .response(finishRequest.credential)
             .build()
 
-        val registrationResult = relyingParty.finishRegistration(options)
+        val registrationResult = this.relyingParty.finishRegistration(options)
 
         val fidoCredential = WebAuthNCredentials(
             UUID.randomUUID(),
             registrationResult.keyId.id.base64Url,
-            WebauthNUtils().toUUID(credentialCreationOptions.user.id),
+            ByteArrayUtils().toUUID(credentialCreationOptions.user.id),
             registrationResult.keyId.type.name,
             registrationResult.publicKeyCose.base64Url,
             registrationResult.signatureCount.toInt()
         )
 
-        userService.addCredential(fidoCredential)
+        this.userService.addCredential(fidoCredential)
 
         val registrationFinishResponse = RegistrationFinishResponse(
             finishRequest.flowId,
@@ -143,7 +147,6 @@ class WebAuthNRegistrationService(
         )
 
         logFinishStep(finishRequest, registrationResult, registrationFinishResponse)
-
         return registrationFinishResponse
     }
 

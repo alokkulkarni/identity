@@ -21,7 +21,7 @@ class IdentityApplication {
 	@Bean
 	fun run(users: UserService, userIdentityRepository: UserIdentityRepository) = CommandLineRunner {
 		userIdentityRepository.deleteAll()
-		val username = "kulkarni.alok@gmail.com"
+		val username = "Kulkarni.alok@gmail.com"
 		users.registerUser(UserRegistrationRequest(username,
 				"swordfish",
 				"swordfish",

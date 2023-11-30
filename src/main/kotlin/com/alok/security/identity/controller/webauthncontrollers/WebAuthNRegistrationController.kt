@@ -10,6 +10,7 @@ import com.yubico.webauthn.exception.RegistrationFailedException
 import jakarta.servlet.http.HttpSession
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.util.Assert
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseBody
@@ -36,15 +37,15 @@ class WebAuthNRegistrationController(private val webAuthNRegistrationService: We
         return response
     }
 
-    @PostMapping("/webauthn/register/finish")
+    @PostMapping("/webauthn/register/finish", consumes = ["application/json"], produces = ["application/json"])
     @Throws(RegistrationFailedException::class, JsonProcessingException::class, RuntimeException::class)
     @ResponseBody
     fun finishRegistration(
         @RequestBody request: RegistrationFinishRequest, session: HttpSession
     ): RegistrationFinishResponse {
         val response = session.getAttribute(START_REG_REQUEST) as RegistrationStartResponse
-        session.setAttribute(FINISH_REG_REQUEST, response)
-        return this.webAuthNRegistrationService.finishRegistration(
+        Assert.notNull(response, "Cloud Not find the original request")
+        return webAuthNRegistrationService.finishRegistration(
             request, response.credentialCreationOptions
         )
     }

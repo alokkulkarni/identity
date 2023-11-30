@@ -3,7 +3,7 @@ package com.alok.security.identity.service.webauthnServices
 import com.alok.security.identity.models.userModels.TokenUserDetails
 import com.alok.security.identity.models.webauthnModels.WebAuthNCredentials
 import com.alok.security.identity.service.UserService
-import com.alok.security.identity.utils.WebauthNUtils
+import com.alok.security.identity.utils.ByteArrayUtils
 import com.yubico.webauthn.CredentialRepository
 import com.yubico.webauthn.RegisteredCredential
 import com.yubico.webauthn.data.ByteArray
@@ -33,7 +33,7 @@ class CredentialRepositoryImpl(val userService: UserService): CredentialReposito
 
     override fun getUserHandleForUsername(username: String): Optional<ByteArray> {
         this.userService.findUserEmail(username)?.let {
-            return Optional.of(WebauthNUtils().toByteArray(it.id))
+            return Optional.of(ByteArrayUtils().toByteArray(it.id))
         }
         return Optional.empty()
     }
@@ -43,12 +43,12 @@ class CredentialRepositoryImpl(val userService: UserService): CredentialReposito
             return Optional.empty()
         }
         val findUserById = this.userService
-            .findUserById(WebauthNUtils().toUUID(userHandle))
+            .findUserById(ByteArrayUtils().toUUID(userHandle))
         return Optional.of(findUserById.get().username)
     }
 
     override fun lookup(credentialId: ByteArray, userHandle: ByteArray): Optional<RegisteredCredential>? {
-        return userService.findUserById(WebauthNUtils().toUUID(userHandle)).let {
+        return userService.findUserById(ByteArrayUtils().toUUID(userHandle)).let {
             it.get().webAuthNCredentials
                 ?.stream()
                 ?.filter { cred ->
@@ -75,7 +75,7 @@ class CredentialRepositoryImpl(val userService: UserService): CredentialReposito
         return try {
             RegisteredCredential.builder()
                 .credentialId(ByteArray.fromBase64Url(fidoCredential.keyId))
-                .userHandle(WebauthNUtils().toByteArray(fidoCredential.userId))
+                .userHandle(ByteArrayUtils().toByteArray(fidoCredential.userId))
                 .publicKeyCose(ByteArray.fromBase64Url(fidoCredential.publicKey))
                 .build()
         } catch (e: Base64UrlException) {

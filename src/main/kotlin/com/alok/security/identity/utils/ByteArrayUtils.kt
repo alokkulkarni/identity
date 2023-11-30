@@ -1,20 +1,18 @@
 package com.alok.security.identity.utils
 
 import java.nio.ByteBuffer
-import com.yubico.webauthn.data.ByteArray as ByteArray1
 
+class ByteArrayUtils {
 
-class WebauthNUtils {
-
-    fun toByteArray(uuid: Long?): ByteArray1 {
+    fun toByteArray(uuid: Long?): com.yubico.webauthn.data.ByteArray {
         val buffer: ByteBuffer = ByteBuffer.wrap(ByteArray(16))
         if (uuid != null) {
             buffer.putLong(uuid)
         }
-        return ByteArray1(buffer.array())
+        return com.yubico.webauthn.data.ByteArray(buffer.array())
     }
 
-    fun toUUID(byteArray: ByteArray1): Long {
+    fun toUUID(byteArray: com.yubico.webauthn.data.ByteArray): Long {
         val byteBuffer: ByteBuffer = ByteBuffer.wrap(byteArray.getBytes())
         return byteBuffer.getLong()
     }

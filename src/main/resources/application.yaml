@@ -35,10 +35,10 @@ management:
         include: '*'
 
 webauthn:
-  origin: "https://dba34d200f1cb35f.ngrok.app"
+  origin: "https://fintechmobile.io"
   rpName: "Bank of Purple"
-  rpId: "dba34d200f1cb35f.ngrok.app"
-  rpIcon: "https://dba34d200f1cb35f.ngrok.app/favicon.ico"
+  rpId: "fintechmobile.io"
+  rpIcon: "https://d278mjrzpbrzy0.cloudfront.net/favicon.ico"
   displayName: "Bank of Purple"
 
 

@@ -21,7 +21,7 @@ class RelyingPartyConfiguration(val webauthNProperties: WebauthNProperties) {
             .identity(relyingPartyIdentity)
             .credentialRepository(credentialRepository)
             .validateSignatureCounter(true)
-            .allowUntrustedAttestation(false)
+            .allowUntrustedAttestation(true)
             .allowOriginPort(false)
             .allowOriginSubdomain(true)
             .origins(webauthNProperties.origin.toSet())

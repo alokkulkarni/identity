@@ -3,6 +3,7 @@
 package com.alok.security.identity.controller.webauthncontrollers
 
 import com.alok.security.identity.models.webauthnModels.WebAuthNLoginFinishRequest
+import com.alok.security.identity.models.webauthnModels.WebAuthNLoginFinishResponse
 import com.alok.security.identity.models.webauthnModels.WebAuthNLoginStartRequest
 import com.alok.security.identity.models.webauthnModels.WebAuthNLoginStartResponse
 import com.alok.security.identity.service.webauthnServices.WebAuthNLoginService
@@ -21,16 +22,11 @@ class WebAuthNLoginController(val webAuthNLoginService: WebAuthNLoginService) {
     companion object{
         private val logger: Logger = LoggerFactory.getLogger(WebAuthNLoginController::class.java)
         private val START_LOGIN_REQUEST = "start_login_request"
-        private val FINISH_LOGIN_REQUEST = "finish_login_request"
     }
 
-    @GetMapping("/webauthn/login")
-    fun get(): String {
-        return "fido-login"
-    }
 
     @ResponseBody
-    @PostMapping("/webauthn/login/start")
+    @PostMapping("/webauthn/login/start", consumes = ["application/json"], produces = ["application/json"])
     fun loginStartResponse(
         @RequestBody request: WebAuthNLoginStartRequest, session: HttpSession
     ): WebAuthNLoginStartResponse {
@@ -40,15 +36,19 @@ class WebAuthNLoginController(val webAuthNLoginService: WebAuthNLoginService) {
     }
 
     @ResponseBody
-    @PostMapping("/webauthn/login/finish")
+    @PostMapping("/webauthn/login/finish", consumes = ["application/json"], produces = ["application/json"])
     @Throws(AssertionFailedException::class)
-    fun loginStartResponse(@RequestBody request: WebAuthNLoginFinishRequest, session: HttpSession): AssertionResult {
-        val assertionRequest = session.getAttribute(START_LOGIN_REQUEST) as AssertionRequest ?: throw RuntimeException("Assertion request not found")
+    fun loginFinishResponse(
+        @RequestBody request: WebAuthNLoginFinishRequest,
+        session: HttpSession
+    ): WebAuthNLoginFinishResponse {
+        val assertionRequest = session.getAttribute(START_LOGIN_REQUEST) as AssertionRequest
+            ?: throw RuntimeException("Assertion request not found")
         val result: AssertionResult = this.webAuthNLoginService.finishLogin(request)
         if (result.isSuccess) {
             session.setAttribute(AssertionRequest::class.java.getName(), result)
         }
-        return result
+        return WebAuthNLoginFinishResponse(result.isSuccess, result.username, result.isSignatureCounterValid)
     }
 
 }
