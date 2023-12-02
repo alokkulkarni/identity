@@ -41,7 +41,7 @@ class GoogleAuthenticatorDevice(
         override val id: UUID = UUID.randomUUID(),
         override val name: String,
         override val type: String = "google-authenticator",
-        private val secret: String = GoogleAuthenticator.createRandomSecret(),
+        private val secret: ByteArray = GoogleAuthenticator.createRandomSecretAsByteArray(),
         private var confirmed: Boolean = false
 ) : OneTimePasswordDevice {
 
@@ -60,6 +60,6 @@ class GoogleAuthenticatorDevice(
         return authenticator.generate() == code
     }
 
-    override fun secret(): String = secret
+    override fun secret(): String = secret.toString(Charsets.UTF_8)
 
 }

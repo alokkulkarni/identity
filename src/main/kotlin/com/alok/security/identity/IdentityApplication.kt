@@ -20,9 +20,15 @@ class IdentityApplication {
 
 	@Bean
 	fun run(users: UserService, userIdentityRepository: UserIdentityRepository) = CommandLineRunner {
-		userIdentityRepository.deleteAll()
-		val username = "Kulkarni.alok@gmail.com"
-		users.registerUser(UserRegistrationRequest(username,
+
+		val userIdentity = userIdentityRepository.findByUsername("Kulkarni.alok@gmail.com")
+			.takeIf { it?.webAuthNCredentials?.isNotEmpty() ?: false }
+
+		if (userIdentity == null) {
+			userIdentityRepository.deleteAll()
+
+			val username = "Kulkarni.alok@gmail.com"
+			users.registerUser(UserRegistrationRequest(username,
 				"swordfish",
 				"swordfish",
 				"Alok",
@@ -30,7 +36,9 @@ class IdentityApplication {
 				"kulkarni",
 				"kulkarni.alok@gmail.com",
 				"1234567890"))
-		users.attachConfirmedDevice(username, "Google Authenticator", "AKMW3WXXWBHAMAHC")
+			users.attachConfirmedDevice(username, "Google Authenticator", "AKMW3WXXWBHAMAHC")
+		}
+
 	}
 }
 

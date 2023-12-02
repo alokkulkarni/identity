@@ -33,7 +33,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 
 @Configuration
 @EnableWebSecurity(debug = true)
-//@EnableWebMvc
 class SecurityConfig {
 
 
@@ -71,25 +70,6 @@ class SecurityConfig {
             .logout { logout -> logout.clearAuthentication(true) }
         return http.build()
     }
-
-//    @Bean
-//    @Order(2)
-//    fun otpFilterChain(http: HttpSecurity,userService: UserService): SecurityFilterChain {
-//
-//        http
-//            .csrf { csrf ->
-//                csrf.disable()
-//            }
-//            .sessionManagement { session ->
-//                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
-//            .authorizeHttpRequests { authorize ->
-//                authorize
-//                    .requestMatchers( "/auth", "/auth**").permitAll()
-//                    .anyRequest().authenticated()
-//            }
-//            .addFilterAfter(OneTimePasswordAuthFilter(userService), UsernamePasswordAuthenticationFilter::class.java)
-//        return http.build()
-//    }
 
     @Bean
     @Order(1)
