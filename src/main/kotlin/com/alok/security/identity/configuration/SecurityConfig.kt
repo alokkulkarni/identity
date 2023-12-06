@@ -58,7 +58,7 @@ class SecurityConfig {
             }
             .authorizeHttpRequests { authorize ->
                 authorize
-                    .requestMatchers("/","/register", "/error", "/auth", "/auth**","/webauthn/**").permitAll()
+                    .requestMatchers("/","/register", "/error", "/auth", "/auth**","/webauthn/**", "/ping").permitAll()
                     .anyRequest().authenticated()
             }
             .authenticationProvider(DaoAuthenticationProvider().apply {
@@ -89,6 +89,7 @@ class SecurityConfig {
                 authorize
                     .requestMatchers(
                         "/",
+                        "/ping",
                         "/webauthn/login/start",
                         "/webauthn/login/finish",
                         "/webauthn/register/start",

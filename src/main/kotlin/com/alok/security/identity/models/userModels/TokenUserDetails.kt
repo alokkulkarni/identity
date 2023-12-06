@@ -8,6 +8,7 @@ import com.alok.security.identity.models.webauthnModels.WebAuthNCredentials
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
+import java.nio.charset.Charset
 
 
 class TokenUserDetails(private val userIdentity: UserIdentity) : UserDetails {
@@ -55,7 +56,8 @@ class TokenUserDetails(private val userIdentity: UserIdentity) : UserDetails {
     }
 
     fun getDevice(): OneTimePasswordDevice? {
-        return userIdentity.device?.let { GoogleAuthenticatorDevice(it.id, userIdentity.device!!.name, userIdentity.device!!.type, userIdentity.device!!.secret, userIdentity.device!!.confirmed) }
+        return userIdentity.device?.let { GoogleAuthenticatorDevice(it.id, userIdentity.device!!.name, userIdentity.device!!.type, userIdentity.device!!.secret.toByteArray(
+            Charsets.UTF_8), userIdentity.device!!.confirmed) }
     }
 
     fun getWebAuthNCredentials(): MutableList<WebAuthNCredentials>? {
@@ -65,7 +67,7 @@ class TokenUserDetails(private val userIdentity: UserIdentity) : UserDetails {
     fun requiresMfa(): Boolean {
         log.info("Checking if user ${userIdentity.username} requires MFA")
         log.info("User ${userIdentity.username} has device ${userIdentity.device}")
-        val googleAuthenticatorDevice = userIdentity.device?.let { GoogleAuthenticatorDevice(it.id, userIdentity.device!!.name, userIdentity.device!!.type, userIdentity.device!!.secret, userIdentity.device!!.confirmed) }
+        val googleAuthenticatorDevice = userIdentity.device?.let { GoogleAuthenticatorDevice(it.id, userIdentity.device!!.name, userIdentity.device!!.type, userIdentity.device!!.secret.toByteArray(Charsets.UTF_8), userIdentity.device!!.confirmed) }
         if (googleAuthenticatorDevice != null) return googleAuthenticatorDevice.confirmed() == true
         return false
     }

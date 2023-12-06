@@ -87,7 +87,7 @@ class UserService(val encoder: PasswordEncoder,
     fun confirmDevice(username: String, code: String): OneTimePasswordDevice {
         val user = securedUserRepository.findByUsername(username) ?: throw UsernameNotFoundException("User not found")
         val device = user.device ?: throw IllegalStateException("No device attached")
-        val googleAuthenticatorDevice = GoogleAuthenticatorDevice(device.id, device.name, device.type, device.secret, device.confirmed)
+        val googleAuthenticatorDevice = GoogleAuthenticatorDevice(device.id, device.name, device.type, device.secret.encodeToByteArray(), device.confirmed)
         if (googleAuthenticatorDevice.confirm(code)) {
             return googleAuthenticatorDevice
         }
@@ -96,7 +96,7 @@ class UserService(val encoder: PasswordEncoder,
 
     fun attachConfirmedDevice(username: String, name: String, secret: String): OneTimePasswordDevice {
         val user = securedUserRepository.findByUsername(username) ?: throw UsernameNotFoundException("User not found")
-        val device = GoogleAuthenticatorDevice(name = name, secret = secret, confirmed = true)
+        val device = GoogleAuthenticatorDevice(name = name, secret = secret.encodeToByteArray(), confirmed = true)
         val deviceEntity = OneTimePasswordDeviceEntity(
                 device.id,
                 device.name,
