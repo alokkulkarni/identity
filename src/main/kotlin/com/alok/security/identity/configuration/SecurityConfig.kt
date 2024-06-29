@@ -105,8 +105,8 @@ class SecurityConfig {
             }
         val authenticationFilter =
             AuthenticationFilter(webAuthNAuthenticationManager, WebAuthNAuthenticationConverter())
-        authenticationFilter.setRequestMatcher(AntPathRequestMatcher("/fido/login"))
-        authenticationFilter.setSuccessHandler(WebAuthNLoginSuccessHandler())
+        authenticationFilter.requestMatcher = AntPathRequestMatcher("/fido/login")
+        authenticationFilter.successHandler = WebAuthNLoginSuccessHandler()
         http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
         return http.build()
     }
