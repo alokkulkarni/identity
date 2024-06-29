@@ -11,7 +11,8 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.stereotype.Service
 import java.security.SecureRandom
 import java.time.Instant.*
-
+/*
+* */
 @Service
 class MagicTokenService(private val userService: UserService, private val magicTokenRepository: MagicTokenRepository) {
 

@@ -3,15 +3,14 @@ package com.alok.security.identity.utils
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import java.io.IOException
-import java.lang.RuntimeException
-import java.util.Objects
 
 
 class JsonUtils {
     companion object {
-        val mapper: ObjectMapper = jacksonObjectMapper().registerModule(com.fasterxml.jackson.datatype.jsr310.JavaTimeModule())
+        val mapper: ObjectMapper = jacksonObjectMapper().registerModule(JavaTimeModule())
             .registerModule(com.fasterxml.jackson.datatype.jdk8.Jdk8Module())
             .registerModule(com.fasterxml.jackson.module.paramnames.ParameterNamesModule())
             .configure(SerializationFeature.INDENT_OUTPUT, true)
